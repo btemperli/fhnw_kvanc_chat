@@ -10,8 +10,8 @@ import ch.fhnw.kvan.chat.interfaces.IChatRoom;
  * current topics and messages concerning those topics.
  * 
  * @see ChatRoom
- * @author © ibneco, Rheinfelden
- * @version
+ * @author ï¿½ ibneco, Rheinfelden
+ * @version 1.0
  */
 public class ChatRoom implements IChatRoom {
 	private final Participants participantInfo = new Participants();

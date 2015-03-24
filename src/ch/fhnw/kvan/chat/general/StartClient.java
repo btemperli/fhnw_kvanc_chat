@@ -28,7 +28,7 @@ import ch.fhnw.kvan.chat.socket.client.Client;
  * 
  * @see Client 
  * @author  � ibneco, Rheinfelden; based on code by Dominik Gruntz
- * @version
+ * @version 1.0
  */
 public class StartClient {
 	

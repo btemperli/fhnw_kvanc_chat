@@ -11,8 +11,7 @@ public interface IChats {
          /**
 	 * Add a topic to the topic list and topic string.
 	 * 
-	 * @param name
-	 *            The string defining the topic
+	 * @param name The string defining the topic
 	 */
 	public boolean addTopic(String topic);
 
