@@ -4,7 +4,11 @@
 * Student: Beat Temperli
 * Dozent: Prof. Dr. Carlo Nicola
 
-## Starte das Projekt
-Starte das Projekt indem du die Klasse **RunClient** laufen lässt. Wähle danach eine Verbindung aus der Liste und drücke Start.
+## Setup:
 
-`ch.fhnw.kvan.chat.general.RunClient`
+1. Starte den Server
+`ch.fhnw.kvan.chat.socket.server.Server`
+
+2. Starte einzelne Clients
+	1. `ch.fhnw.kvan.chat.general.RunClient`
+	2. Wähle einen Client aus und drücke **Start**
