@@ -18,8 +18,8 @@ import ch.fhnw.kvan.chat.interfaces.IChats;
  * it retrieves the last ten messages and the topic list as well.
  * 
  * @see Chats
- * @author © ibneco, Rheinfelden
- * @version
+ * @author ï¿½ ibneco and btemperli
+ * @version 1.0
  */
 public class Chats implements IChats {
 	private final List<String> topicList = Collections
@@ -28,10 +28,10 @@ public class Chats implements IChats {
 	private final Map<String, List<String>> topicMessagesMap = Collections
 			.synchronizedMap(new HashMap<String, List<String>>());
 
-	private final Logger logger3;
+	private final Logger logger;
 
 	public Chats() {
-		logger3 = Logger.getLogger(Chats.class);
+		logger = Logger.getLogger(Chats.class);
 	}
 
 	@Override
@@ -45,7 +45,7 @@ public class Chats implements IChats {
 			topicMessagesMap.put(topic,
 					Collections.synchronizedList(new ArrayList<String>()));
 
-			logger3.info("adding new topic:" + topic);
+			logger.info("adding new topic:" + topic);
 
 			// create a new topicString from topics array
 			StringBuffer topics = new StringBuffer();
@@ -67,7 +67,7 @@ public class Chats implements IChats {
 		if (topicList.contains(topic)) {
 			topicList.remove(topic);
 			topicMessagesMap.remove(topic);
-			logger3.info("removing topic:" + topic);
+			logger.info("removing topic:" + topic);
 
 			// create a new topicString from topics array
 			StringBuffer topics = new StringBuffer();

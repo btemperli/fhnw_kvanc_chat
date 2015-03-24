@@ -13,7 +13,7 @@ import java.io.IOException;
  * room.
  * 
  * @see IChatRoom
- * @author © ibneco, Rheinfelden
+ * @author ï¿½ ibneco, Rheinfelden
  * @version
  */
 
@@ -46,7 +46,7 @@ public interface IChatDriver {
 	 * After disconnect has been called getChatRoom returns null.
 	 * 
 	 * @see #connect
-	 * @see Chat
+	 * @see IChatRoom
 	 */
 	public IChatRoom getChatRoom();
 

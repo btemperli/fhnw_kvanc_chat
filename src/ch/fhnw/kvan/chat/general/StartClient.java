@@ -37,8 +37,6 @@ public class StartClient {
 	public static void main(String args[]) {
 		// Log4J initialisation
 		logger = Logger.getLogger(StartClient.class);
-		// Set up a simple configuration that logs on the console
-		BasicConfigurator.configure();
 
 		if (args.length < 1) {
 			logger.error("Usage: java " + StartClient.class.getName()

@@ -26,7 +26,7 @@ public interface IParticipants {
 	/**
 	 * Get participant string.
 	 * 
-	 * @returns String
+	 * @return String
 	 *            String holding all participant names 
 	 */
 	public String getParticipants();

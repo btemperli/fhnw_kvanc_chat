@@ -6,24 +6,27 @@
 package ch.fhnw.kvan.chat.interfaces;
 
 
+import java.io.IOError;
+import java.io.IOException;
+
 public interface IChats {
 
          /**
 	 * Add a topic to the topic list and topic string.
 	 * 
-	 * @param name The string defining the topic
+	 * @param topic The string defining the topic
 	 */
 	public boolean addTopic(String topic);
 
 	/**
 	 * Remove a topic from the topic list and topic string.
 	 * 
-	 * @param name
+	 * @param topic
 	 *            The string defining the topic
 	 * @throws IOException
 	 *             if a remote or communication problem occurs
 	 */
-	public boolean removeTopic(String topic);
+	public boolean removeTopic(String topic) throws IOException;
 	
 	/**
 	 * Get topic string.
@@ -50,7 +53,7 @@ public interface IChats {
 	 * 
 	 * @param topic
 	 *            The string defining the topic
-	 * @returns String
+	 * @return String
 	 *            Last ten messages on that topic
 	 */
 	public String getMessages(String topic);

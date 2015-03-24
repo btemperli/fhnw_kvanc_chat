@@ -15,8 +15,8 @@ import ch.fhnw.kvan.chat.interfaces.IParticipants;
  * well, which can be sent to a client to refresh its local participant list.
  * 
  * @see Participants
- * @author © ibneco, Rheinfelden
- * @version
+ * @author ibneco and btemperli
+ * @version 1.0
  */
 
 public class Participants implements IParticipants {
@@ -24,15 +24,15 @@ public class Participants implements IParticipants {
 			.synchronizedList(new ArrayList<String>());
 	private String participantString = "";
 
-	private final Logger logger2;
+	private final Logger logger;
 
 	public Participants() {
-		logger2 = Logger.getLogger(Participants.class);
+		logger = Logger.getLogger(Participants.class);
 	}
 
 	@Override
 	public synchronized boolean addParticipant(String name) {
-		logger2.info("creating new client:" + name);
+		logger.info("creating new client:" + name);
 
 		// add participant to list if not yet present
 		if (!participantList.contains(name)) {
@@ -56,7 +56,7 @@ public class Participants implements IParticipants {
 
 	@Override
 	public synchronized boolean removeParticipant(String name) {
-		logger2.info("removing client:" + name);
+		logger.info("removing client:" + name);
 
 		if (participantList.contains(name)) {
 			participantList.remove(name);

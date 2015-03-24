@@ -11,17 +11,17 @@ import ch.fhnw.kvan.chat.interfaces.IChatRoom;
  * only gets a reference to it.
  * 
  * @see ChatRoomDriver
- * @author © ibneco, Rheinfelden
- * @version
+ * @author ibneco and btemperli
+ * @version 1.0
  */
 public class ChatRoomDriver implements IChatDriver {
-	private ChatRoom chatRoom = null;
 
+	private ChatRoom chatRoom = null;
 	private static Logger logger;
 
 	public ChatRoomDriver() {
-		// Log4J initialisation
 		logger = Logger.getLogger(ChatRoomDriver.class);
+		logger.info("ChatRoomDriver initialized.");
 	}
 
 	@Override
