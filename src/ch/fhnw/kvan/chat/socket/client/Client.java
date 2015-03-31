@@ -20,6 +20,8 @@ public class Client {
     private static Socket socket;
     private static In in;
     private static Out out;
+    private static Boolean running;
+    private static ClientGUI gui;
 
 
     public static void main(String args[]) {
@@ -33,7 +35,7 @@ public class Client {
 
         try {
             socket = new Socket("localhost", 8080);
-//            in = new In(socket);
+            in = new In(socket);
             out = new Out(socket);
 
             // do the login, send the name to the server.
@@ -41,7 +43,11 @@ public class Client {
 
             IChatRoom chatRoom = ChatRoom.getInstance();
 
-            ClientGUI gui = new ClientGUI(chatRoom, args[0]);
+            gui = new ClientGUI(chatRoom, args[0]);
+
+            running = true;
+
+            startListener();
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -50,5 +56,34 @@ public class Client {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void startListener() {
+
+        new Thread() {
+            public void run() {
+
+                String input = in.readLine();
+
+                while(running && input != null) {
+                    handleInput(input);
+                    input = in.readLine();
+                }
+            }
+        }.start();
+    }
+
+    public static void handleInput(String input) {
+        logger.info(input);
+
+        String key = input.split("=")[0];
+        String value = input.split("=")[1];
+
+        if (key.equals("participants")) {
+            gui.updateParticipants(value.split(";"));
+        } else {
+            logger.error("Sorry, but the key (" + key + ") could not be handled.");
+        }
+
     }
 }

@@ -24,10 +24,11 @@ public class ConnectionHandler extends Thread {
     private String message;
     private ChatRoom chatRoom;
     private static Logger logger;
+    private ConnectionListener listener;
 
     private Boolean running;
 
-    public ConnectionHandler(Socket socket) {
+    public ConnectionHandler(Socket socket, ConnectionListener listener) {
 
         logger = Logger.getLogger(ConnectionHandler.class);
         logger.info("ConnectionHandler initialized");
@@ -39,14 +40,11 @@ public class ConnectionHandler extends Thread {
     }
 
     public void run() {
-        logger.info("ConnectionHandler.run()");
 
         String input = in.readLine();
 
         while(running && input != null) {
-            logger.info(input);
-            handleInput(input);
-
+            message = input;
             input = in.readLine();
         }
 
@@ -56,18 +54,28 @@ public class ConnectionHandler extends Thread {
         this.chatRoom = chatRoom;
     }
 
-    public void handleInput(String input) {
-        String key = input.split("=")[0];
-        String value = input.split("=")[1];
+    public String getMessage() {
+        return message;
+    }
 
-        if (key.equals("name")) {
-            try {
-                chatRoom.addParticipant(value);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            logger.error("Sorry, but the key (" + key + ") could not be handled.");
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setParticipant(String name) {
+        try {
+            chatRoom.addParticipant(name);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+    public void sendParticipants() {
+        try {
+            out.println(chatRoom.getParticipants());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

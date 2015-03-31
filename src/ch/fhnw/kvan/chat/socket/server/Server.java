@@ -16,6 +16,7 @@ import java.net.Socket;
 public class Server {
 
     private static Logger logger;
+    private static Boolean running;
     public ChatRoomDriver chatRoomDriver;
     public ServerSocket serverSocket;
 
@@ -23,6 +24,7 @@ public class Server {
 
         BasicConfigurator.configure();
         logger = Logger.getLogger(Server.class);
+        running = true;
 
         Server server = new Server();
     }
@@ -32,18 +34,18 @@ public class Server {
             chatRoomDriver = new ChatRoomDriver();
             chatRoomDriver.connect("localhost", 8080);
             serverSocket = new ServerSocket(8080);
+
             // ConnectionListener: Handles all active SocketConnections to the Clients and waits for new Requests
             ConnectionListener listener = new ConnectionListener();
             listener.start();
 
-            while (true) {
-                logger.info("Server: Waiting for a client");
+            while (running) {
 
                 // Server accepts Client --> new Client Socket
                 Socket socket = serverSocket.accept();
 
                 // Each Client gets an own thread with reference on the socket
-                ConnectionHandler handler = new ConnectionHandler(socket);
+                ConnectionHandler handler = new ConnectionHandler(socket, listener);
                 logger.info("Client (" + socket.getInetAddress() + ") connected");
                 handler.setChatRoom((ChatRoom) chatRoomDriver.getChatRoom());
 

@@ -1,7 +1,5 @@
 package ch.fhnw.kvan.chat.socket.server;
 
-import ch.fhnw.kvan.chat.utils.In;
-import ch.fhnw.kvan.chat.utils.Out;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -13,19 +11,18 @@ public class ConnectionListener extends Thread {
 
     CopyOnWriteArrayList<ConnectionHandler> connections;
     private static Logger logger;
-    private In in;
-    private Out out;
+    private Boolean running;
 
     public ConnectionListener()
     {
         logger = Logger.getLogger(Server.class);
         logger.info("ConnectionListener");
         connections = new CopyOnWriteArrayList<ConnectionHandler>();
+        running = true;
     }
 
     public void addConnection(ConnectionHandler handler)
     {
-        logger.info("Add a ConnectionHandler");
         connections.add(handler);
     }
 
@@ -33,11 +30,41 @@ public class ConnectionListener extends Thread {
     {
         logger.info("run the ConnectionListener");
 
-        while(true) {
+        while(running) {
 
             if (connections.size() > 0) {
 
+                checkMessages();
+
             }
+        }
+    }
+
+    public void checkMessages() {
+
+        String message;
+        for (ConnectionHandler connection : connections) {
+            if (connection.getMessage() != null) {
+                message = connection.getMessage();
+                connection.setMessage(null);
+
+                handleMessage(message, connection);
+            }
+        }
+    }
+
+    public void handleMessage(String message, ConnectionHandler connectionHandler) {
+        String key = message.split("=")[0];
+        String value = message.split("=")[1];
+
+        if (key.equals("name")) {
+            connectionHandler.setParticipant(value);
+            for (ConnectionHandler connection : connections) {
+                connection.sendParticipants();
+            }
+
+        } else {
+            logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }
     }
 
