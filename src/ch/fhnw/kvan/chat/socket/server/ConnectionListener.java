@@ -62,7 +62,11 @@ public class ConnectionListener extends Thread {
             for (ConnectionHandler connection : connections) {
                 connection.sendParticipants();
             }
-
+        } else if (key.equals("remove_name")) {
+            connectionHandler.removeParticipant(value);
+            for (ConnectionHandler connection : connections) {
+                connection.sendParticipants();
+            }
         } else {
             logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }

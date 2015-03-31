@@ -39,6 +39,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import ch.fhnw.kvan.chat.socket.client.ClientWindowListener;
 import org.apache.log4j.Logger;
 
 import ch.fhnw.kvan.chat.interfaces.IChatRoom;
@@ -49,6 +50,7 @@ public class ClientGUI extends JFrame {
 	// private Participant participant;
 	private IChatRoom chatRoom;
 	private String user;
+	private ClientWindowListener listener;
 
 	private final JComboBox<String> topiccombo = new JComboBox<String>();
 	private final JComboBox<String> participantcombo = new JComboBox<String>();
@@ -68,14 +70,16 @@ public class ClientGUI extends JFrame {
 
 	private static Logger logger;
 
-	public ClientGUI(IChatRoom client, String name) {
+	public ClientGUI(IChatRoom client, String name, ClientWindowListener listener) {
 		// Log4J initialisation
 		logger = Logger.getLogger(ClientGUI.class);
 
 		this.chatRoom = client;
 		this.user = name;
+		this.listener = listener;
 		setBackground(Color.lightGray);
 		setResizable(false);
+
 		// add all components and corresponding listeners to the ClientGUI frame
 		addComponentsToFrame();
 		setTitle("Chat Client 1.0: " + user.toUpperCase() + "");
@@ -482,6 +486,7 @@ public class ClientGUI extends JFrame {
 	public void exit() {
 		try {
 			chatRoom.removeParticipant(user);
+			listener.callListenerWindowClose();
 		} catch (IOException e) {
 			logger.error("ClientGUI exit I/O:" + e.getMessage());
 		}

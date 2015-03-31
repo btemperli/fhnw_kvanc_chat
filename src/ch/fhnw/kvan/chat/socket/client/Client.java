@@ -35,9 +35,6 @@ public class Client {
         logger = Logger.getLogger(Client.class);
 
         logger.info("Start a client with " + args.length + " arguments");
-        for (String arg : args) {
-            logger.info(arg);
-        }
 
         name = args[0];
 
@@ -51,7 +48,14 @@ public class Client {
 
             chatRoom = ChatRoom.getInstance();
 
-            gui = new ClientGUI(chatRoom, args[0]);
+            ClientWindowListener listener = new ClientWindowListener() {
+                @Override
+                public void callListenerWindowClose() {
+                    exitWindow();
+                }
+            };
+
+            gui = new ClientGUI(chatRoom, args[0], listener);
 
             running = true;
 
@@ -92,7 +96,11 @@ public class Client {
         } else {
             logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }
+    }
 
+    public static void exitWindow() {
+        System.out.println("GUI is now closed...");
+        out.println("remove_name=" + name);
     }
 
     /**
@@ -110,15 +118,31 @@ public class Client {
             String participants = chatRoom.getParticipants();
 
             if (!participants.equals("participants=")) {
+
+                // there are participants yet. remove the old from the new list
                 String[] oldNames = participants.split("=")[1].split(";");
-                for (String oldName : oldNames) {
-                    namesList.remove(oldName);
-                }
-                for (String name : namesList) {
-                    gui.addParticipant(name);
-                    chatRoom.addParticipant(name);
+
+                if (oldNames.length < names.length) {
+                    for (String oldName : oldNames) {
+                        namesList.remove(oldName);
+                    }
+
+                    // now add the new ones.
+                    for (String name : namesList) {
+                        gui.addParticipant(name);
+                        chatRoom.addParticipant(name);
+                    }
+                } else {
+                    for (String oldName : oldNames) {
+                        if (!oldName.equals(name) && namesList.indexOf(oldName) == -1) {
+                            gui.removeParticipant(oldName);
+                            chatRoom.removeParticipant(oldName);
+                        }
+                    }
                 }
             } else {
+
+                // there are no participants. add all.
                 for (String name : namesList) {
                     gui.addParticipant(name);
                     chatRoom.addParticipant(name);

@@ -70,6 +70,14 @@ public class ConnectionHandler extends Thread {
         }
     }
 
+    public void removeParticipant(String name) {
+        try {
+            chatRoom.removeParticipant(name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void sendParticipants() {
         try {
             out.println(chatRoom.getParticipants());
