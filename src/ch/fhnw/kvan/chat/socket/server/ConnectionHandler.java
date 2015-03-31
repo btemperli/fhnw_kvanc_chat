@@ -23,17 +23,50 @@ public class ConnectionHandler extends Thread {
     private ChatRoom chatRoom;
     private static Logger logger;
 
+    private Boolean running;
+
     public ConnectionHandler(Socket socket) {
 
-        logger = Logger.getLogger(ConnectionHandler.class
-        );
+        logger = Logger.getLogger(ConnectionHandler.class);
         logger.info("ConnectionHandler initialized");
-        in = new In(socket);
-        out = new Out(socket);
+        this.in = new In(socket);
+        this.out = new Out(socket);
+
         this.socket = socket;
+        running = true;
+    }
+
+    public void run() {
+        logger.info("ConnectionHandler.run()");
+
+        while(running){
+
+            checkConnection();
+
+            logger.info("Connection is running...");
+            logger.info(in.readAll());
+
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     public void setChatRoom(ChatRoom chatRoom) {
         this.chatRoom = chatRoom;
     }
+
+    /**
+     * check the connection
+     */
+    public synchronized void checkConnection(){
+        if(socket.isClosed()){
+            logger.info("Client disconnected");
+            running = false;
+        }
+    }
+
 }

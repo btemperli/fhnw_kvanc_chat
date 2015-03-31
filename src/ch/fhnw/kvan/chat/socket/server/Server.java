@@ -24,12 +24,6 @@ public class Server {
         BasicConfigurator.configure();
         logger = Logger.getLogger(Server.class);
 
-        // Log the received arguments.
-        logger.info("Start the Server with " + args.length + " arguments");
-        for (String arg : args) {
-            logger.info(arg);
-        }
-
         Server server = new Server();
     }
 

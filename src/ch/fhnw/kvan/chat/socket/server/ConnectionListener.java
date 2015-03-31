@@ -1,5 +1,7 @@
 package ch.fhnw.kvan.chat.socket.server;
 
+import ch.fhnw.kvan.chat.utils.In;
+import ch.fhnw.kvan.chat.utils.Out;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -11,6 +13,8 @@ public class ConnectionListener extends Thread {
 
     CopyOnWriteArrayList<ConnectionHandler> connections;
     private static Logger logger;
+    private In in;
+    private Out out;
 
     public ConnectionListener()
     {
@@ -33,7 +37,6 @@ public class ConnectionListener extends Thread {
 
             if (connections.size() > 0) {
 
-//                logger.info("ConnectionListener is running");
             }
         }
     }

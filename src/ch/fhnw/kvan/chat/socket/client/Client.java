@@ -26,7 +26,6 @@ public class Client {
 
         logger = Logger.getLogger(Client.class);
 
-        logger.info("TODO:");
         logger.info("Start a client with " + args.length + " arguments");
         for (String arg : args) {
             logger.info(arg);
@@ -40,6 +39,12 @@ public class Client {
             IChatRoom chatRoom = ChatRoom.getInstance();
 
             ClientGUI gui = new ClientGUI(chatRoom, args[0]);
+
+            // do the login
+            logger.info("Login on server with message: 'name=" + args[0] + "'");
+            out.print("name=" + args[0]);
+            out.close();
+
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
