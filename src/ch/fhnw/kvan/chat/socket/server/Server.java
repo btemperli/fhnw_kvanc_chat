@@ -32,8 +32,8 @@ public class Server {
     public Server() {
         try {
             chatRoomDriver = new ChatRoomDriver();
-            chatRoomDriver.connect("localhost", 8080);
-            serverSocket = new ServerSocket(8080);
+            chatRoomDriver.connect("localhost", 6666);
+            serverSocket = new ServerSocket(6666);
 
             // ConnectionListener: Handles all active SocketConnections to the Clients and waits for new Requests
             ConnectionListener listener = new ConnectionListener();

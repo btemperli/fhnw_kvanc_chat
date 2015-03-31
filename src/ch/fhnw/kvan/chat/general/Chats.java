@@ -18,7 +18,7 @@ import ch.fhnw.kvan.chat.interfaces.IChats;
  * it retrieves the last ten messages and the topic list as well.
  * 
  * @see Chats
- * @author � ibneco and btemperli
+ * @author ibneco and btemperli
  * @version 1.0
  */
 public class Chats implements IChats {

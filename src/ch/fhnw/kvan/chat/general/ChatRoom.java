@@ -10,7 +10,7 @@ import ch.fhnw.kvan.chat.interfaces.IChatRoom;
  * current topics and messages concerning those topics.
  * 
  * @see ChatRoom
- * @author � ibneco, Rheinfelden
+ * @author ibneco and btemperli
  * @version 1.0
  */
 public class ChatRoom implements IChatRoom {

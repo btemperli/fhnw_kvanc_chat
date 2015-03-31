@@ -1,6 +1,7 @@
 package ch.fhnw.kvan.chat.socket.client;
 
 import ch.fhnw.kvan.chat.general.ChatRoom;
+import ch.fhnw.kvan.chat.general.Participants;
 import ch.fhnw.kvan.chat.gui.ClientGUI;
 import ch.fhnw.kvan.chat.interfaces.IChatRoom;
 import ch.fhnw.kvan.chat.utils.In;
@@ -10,6 +11,9 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by btemperli on 24.03.15.
@@ -22,6 +26,8 @@ public class Client {
     private static Out out;
     private static Boolean running;
     private static ClientGUI gui;
+    private static ChatRoom chatRoom;
+    private static String name;
 
 
     public static void main(String args[]) {
@@ -33,15 +39,17 @@ public class Client {
             logger.info(arg);
         }
 
+        name = args[0];
+
         try {
-            socket = new Socket("localhost", 8080);
+            socket = new Socket("localhost", 6666);
             in = new In(socket);
             out = new Out(socket);
 
             // do the login, send the name to the server.
-            out.println("name=" + args[0]);
+            out.println("name=" + name);
 
-            IChatRoom chatRoom = ChatRoom.getInstance();
+            chatRoom = ChatRoom.getInstance();
 
             gui = new ClientGUI(chatRoom, args[0]);
 
@@ -80,10 +88,45 @@ public class Client {
         String value = input.split("=")[1];
 
         if (key.equals("participants")) {
-            gui.updateParticipants(value.split(";"));
+            addParticipants(value);
         } else {
             logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }
 
+    }
+
+    /**
+     * Add Participants
+     * - to the gui
+     * - to the client's chatroom
+     * @param value String, comes directly from the server
+     */
+    private static void addParticipants(String value) {
+        try {
+            String[] names = value.split(";");
+            List<String> namesList = new ArrayList<String>(Arrays.asList(names));
+            namesList.remove(name); // remove own name from list.
+
+            String participants = chatRoom.getParticipants();
+
+            if (!participants.equals("participants=")) {
+                String[] oldNames = participants.split("=")[1].split(";");
+                for (String oldName : oldNames) {
+                    namesList.remove(oldName);
+                }
+                for (String name : namesList) {
+                    gui.addParticipant(name);
+                    chatRoom.addParticipant(name);
+                }
+            } else {
+                for (String name : namesList) {
+                    gui.addParticipant(name);
+                    chatRoom.addParticipant(name);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

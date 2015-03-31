@@ -78,7 +78,7 @@ public class ClientGUI extends JFrame {
 		setResizable(false);
 		// add all components and corresponding listeners to the ClientGUI frame
 		addComponentsToFrame();
-		setTitle("Chat Client 1.0: [" + user + "]");
+		setTitle("Chat Client 1.0: " + user.toUpperCase() + "");
 		pack();
 		setVisible(true);
 	}
@@ -561,7 +561,7 @@ public class ClientGUI extends JFrame {
 			p_text.add(new JLabel("Distributed Systems", SwingConstants.CENTER));
 			p_text.add(new JLabel("Chat Client", SwingConstants.CENTER));
 			p_text.add(new JLabel("", SwingConstants.CENTER));
-			p_text.add(new JLabel("© ibneco, Rheinfelden, 2012",
+			p_text.add(new JLabel("ï¿½ ibneco, Rheinfelden, 2012",
 					SwingConstants.CENTER));
 
 			JButton ok = new JButton("OK");
