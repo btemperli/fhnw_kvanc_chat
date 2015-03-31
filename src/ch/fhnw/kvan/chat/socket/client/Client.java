@@ -33,17 +33,15 @@ public class Client {
 
         try {
             socket = new Socket("localhost", 8080);
-            in = new In(socket);
+//            in = new In(socket);
             out = new Out(socket);
+
+            // do the login, send the name to the server.
+            out.println("name=" + args[0]);
 
             IChatRoom chatRoom = ChatRoom.getInstance();
 
             ClientGUI gui = new ClientGUI(chatRoom, args[0]);
-
-            // do the login
-            logger.info("Login on server with message: 'name=" + args[0] + "'");
-            out.print("name=" + args[0]);
-            out.close();
 
         } catch (UnknownHostException e) {
             e.printStackTrace();

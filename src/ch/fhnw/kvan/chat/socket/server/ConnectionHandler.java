@@ -5,6 +5,8 @@ import ch.fhnw.kvan.chat.general.ChatRoom;
 import ch.fhnw.kvan.chat.utils.In;
 import ch.fhnw.kvan.chat.utils.Out;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -39,18 +41,13 @@ public class ConnectionHandler extends Thread {
     public void run() {
         logger.info("ConnectionHandler.run()");
 
-        while(running){
+        String input = in.readLine();
 
-            checkConnection();
+        while(running && input != null) {
+            logger.info(input);
+            handleInput(input);
 
-            logger.info("Connection is running...");
-            logger.info(in.readAll());
-
-            try {
-                Thread.sleep(2000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            input = in.readLine();
         }
 
     }
@@ -59,14 +56,18 @@ public class ConnectionHandler extends Thread {
         this.chatRoom = chatRoom;
     }
 
-    /**
-     * check the connection
-     */
-    public synchronized void checkConnection(){
-        if(socket.isClosed()){
-            logger.info("Client disconnected");
-            running = false;
+    public void handleInput(String input) {
+        String key = input.split("=")[0];
+        String value = input.split("=")[1];
+
+        if (key.equals("name")) {
+            try {
+                chatRoom.addParticipant(value);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }
     }
-
 }
