@@ -1,7 +1,6 @@
 package ch.fhnw.kvan.chat.socket.client;
 
 import ch.fhnw.kvan.chat.general.ChatRoom;
-import ch.fhnw.kvan.chat.general.Participants;
 import ch.fhnw.kvan.chat.gui.ClientGUI;
 import ch.fhnw.kvan.chat.interfaces.IChatRoom;
 import ch.fhnw.kvan.chat.utils.In;
@@ -18,7 +17,7 @@ import java.util.List;
 /**
  * Created by btemperli on 24.03.15.
  */
-public class Client {
+public class Client implements IChatRoom {
 
     private static Logger logger;
     private static Socket socket;
@@ -30,16 +29,20 @@ public class Client {
     private static String name;
 
 
-    public static void main(String args[]) {
-
+    public static void main(String[] args) {
         logger = Logger.getLogger(Client.class);
 
-        logger.info("Start a client with " + args.length + " arguments");
-
         name = args[0];
+        Client client = new Client(args[1], Integer.parseInt(args[2]));
+
+    }
+
+    public Client(String host, int port) {
+
+        logger.info("Start a client");
 
         try {
-            socket = new Socket("localhost", 6666);
+            socket = new Socket(host, port);
             in = new In(socket);
             out = new Out(socket);
 
@@ -55,7 +58,7 @@ public class Client {
                 }
             };
 
-            gui = new ClientGUI(chatRoom, args[0], listener);
+            gui = new ClientGUI(this, name, listener);
 
             running = true;
 
@@ -70,7 +73,7 @@ public class Client {
         }
     }
 
-    public static void startListener() {
+    public void startListener() {
 
         new Thread() {
             public void run() {
@@ -85,22 +88,69 @@ public class Client {
         }.start();
     }
 
-    public static void handleInput(String input) {
+    public void handleInput(String input) {
         logger.info(input);
 
         String key = input.split("=")[0];
         String value = input.split("=")[1];
 
         if (key.equals("participants")) {
-            addParticipants(value);
+            addParticipant(value);
+        } else if (key.equals("add_topic")) {
+            addTopicFromServer(value);
+        } else if (key.equals("topics")) {
+            String[] values = value.split(";");
+            for (String topic : values) {
+                addTopic(topic);
+            }
         } else {
             logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }
     }
 
+    /**
+     * Listener for exitWindow, logs out the client from the server.
+     */
     public static void exitWindow() {
         System.out.println("GUI is now closed...");
         out.println("remove_name=" + name);
+    }
+
+    public String getMessages(String topic) {
+        logger.info("client: get Messages in " + topic);
+
+        return "messages"; // todo
+    }
+
+    public boolean addMessage(String topic, String message) {
+        logger.info("client: add Message: " + message + " in topic " + topic);
+
+        return false;
+    }
+
+    public boolean removeTopic(String topic) {
+        logger.info("client: remove Topic: " + topic);
+        return false;
+    }
+
+    /**
+     * Add new Topic by HandleInput
+     * @param value topic-name
+     */
+    public boolean addTopic (String value) {
+        logger.info("client: add Topic: " + value);
+
+        out.println("add_topic=" + value);
+        return true;
+    }
+
+    public String refresh(String topic) {
+        return getMessages(topic);
+    }
+
+    public boolean removeParticipant(String value) {
+        logger.info("client: remove Participant: " + value);
+        return false;
     }
 
     /**
@@ -109,7 +159,7 @@ public class Client {
      * - to the client's chatroom
      * @param value String, comes directly from the server
      */
-    private static void addParticipants(String value) {
+    public boolean addParticipant(String value) {
         try {
             String[] names = value.split(";");
             List<String> namesList = new ArrayList<String>(Arrays.asList(names));
@@ -149,6 +199,18 @@ public class Client {
                 }
             }
 
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    private void addTopicFromServer(String topic) {
+        logger.info("Server sent new Topic: " + topic);
+        try {
+            chatRoom.addTopic(topic);
+            gui.addTopic(topic);
         } catch (IOException e) {
             e.printStackTrace();
         }

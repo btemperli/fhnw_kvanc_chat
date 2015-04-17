@@ -67,6 +67,11 @@ public class ConnectionListener extends Thread {
             for (ConnectionHandler connection : connections) {
                 connection.sendParticipants();
             }
+        } else if (key.equals("add_topic")) {
+            for (ConnectionHandler connection : connections) {
+                connection.addTopic(value);
+            }
+            // todo
         } else {
             logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }
