@@ -59,6 +59,7 @@ public class ConnectionListener extends Thread {
 
         if (key.equals("name")) {
             connectionHandler.setParticipant(value);
+            connectionHandler.sendTopics();
             for (ConnectionHandler connection : connections) {
                 connection.sendParticipants();
             }
@@ -71,7 +72,12 @@ public class ConnectionListener extends Thread {
             for (ConnectionHandler connection : connections) {
                 connection.addTopic(value);
             }
-            // todo
+        } else if (key.equals("message")) {
+            String theMessage = value.split(";")[0];
+            String topic = message.split("=")[2];
+            for (ConnectionHandler connection : connections) {
+                connection.sendMessage(theMessage, topic);
+            }
         } else {
             logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }

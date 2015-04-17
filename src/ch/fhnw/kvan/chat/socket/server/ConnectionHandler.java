@@ -86,10 +86,27 @@ public class ConnectionHandler extends Thread {
         }
     }
 
+    public void sendTopics() {
+        try {
+            out.println(chatRoom.getTopics());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void addTopic(String value) {
         try {
             out.println("add_topic=" + value);
             chatRoom.addTopic(value);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMessage(String message, String topic) {
+        try {
+            out.println("message=" + message + ";topic=" + topic);
+            chatRoom.addMessage(topic, message);
         } catch (IOException e) {
             e.printStackTrace();
         }

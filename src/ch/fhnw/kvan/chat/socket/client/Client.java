@@ -92,7 +92,12 @@ public class Client implements IChatRoom {
         logger.info(input);
 
         String key = input.split("=")[0];
-        String value = input.split("=")[1];
+        String value = "";
+        try {
+            value = input.split("=")[1];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // do nothing
+        }
 
         if (key.equals("participants")) {
             addParticipant(value);
@@ -101,8 +106,12 @@ public class Client implements IChatRoom {
         } else if (key.equals("topics")) {
             String[] values = value.split(";");
             for (String topic : values) {
-                addTopic(topic);
+                addTopicFromServer(topic);
             }
+        } else if (key.equals("message")) {
+            String message = value.split(";")[0];
+            String topic = input.split("=")[2];
+            addMessageFromServer(topic, message);
         } else {
             logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }
@@ -125,11 +134,14 @@ public class Client implements IChatRoom {
     public boolean addMessage(String topic, String message) {
         logger.info("client: add Message: " + message + " in topic " + topic);
 
+        out.println("message=" + message + ";topic=" + topic);
+
         return false;
     }
 
     public boolean removeTopic(String topic) {
         logger.info("client: remove Topic: " + topic);
+        out.println("remove_topic=" + topic);
         return false;
     }
 
@@ -208,9 +220,23 @@ public class Client implements IChatRoom {
 
     private void addTopicFromServer(String topic) {
         logger.info("Server sent new Topic: " + topic);
+
+        if (!topic.equals("")) {
+            try {
+                chatRoom.addTopic(topic);
+                gui.addTopic(topic);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void addMessageFromServer(String topic, String message) {
         try {
-            chatRoom.addTopic(topic);
-            gui.addTopic(topic);
+            chatRoom.addMessage(topic, message);
+            if (gui.getCurrentTopic().equals(topic)) {
+                gui.addMessage(message);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
