@@ -111,7 +111,12 @@ public class Client implements IChatRoom {
         } else if (key.equals("message")) {
             String message = value.split(";")[0];
             String topic = input.split("=")[2];
-            addMessageFromServer(topic, message);
+            addMessageFromServer(topic, message, true);
+        } else if (key.equals("messages")) {
+            String[] values = value.split(";");
+            for (String message : values) {
+                addMessageFromServer(gui.getCurrentTopic(), message, false);
+            }
         } else {
             logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }
@@ -126,9 +131,9 @@ public class Client implements IChatRoom {
     }
 
     public String getMessages(String topic) {
-        logger.info("client: get Messages in " + topic);
 
-        return "messages"; // todo
+        out.println("get_messages=" + topic);
+        return null;
     }
 
     public boolean addMessage(String topic, String message) {
@@ -157,6 +162,9 @@ public class Client implements IChatRoom {
     }
 
     public String refresh(String topic) {
+        logger.info("Refresh");
+        gui.updateMessages(null);
+
         return getMessages(topic);
     }
 
@@ -231,14 +239,18 @@ public class Client implements IChatRoom {
         }
     }
 
-    private void addMessageFromServer(String topic, String message) {
-        try {
-            chatRoom.addMessage(topic, message);
-            if (gui.getCurrentTopic().equals(topic)) {
-                gui.addMessage(message);
+    private void addMessageFromServer(String topic, String message, Boolean newMessage) {
+        if (!message.equals("")) {
+            try {
+                if (newMessage) {
+                    chatRoom.addMessage(topic, message);
+                }
+                if (gui.getCurrentTopic().equals(topic)) {
+                    gui.addMessage(message);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

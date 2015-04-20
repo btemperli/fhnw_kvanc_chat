@@ -473,7 +473,7 @@ public class ClientGUI extends JFrame {
 	public void updateMessages(String[] messages) {
 		enteredText.setText("");
 
-		if (messages.length != 0) {
+		if (messages != null && messages.length != 0) {
 			for (int i = 0; i < messages.length; i++) {
 				enteredText.insert(messages[i] + "\n", enteredText.getText()
 						.length());

@@ -53,9 +53,9 @@ public class ConnectionListener extends Thread {
         }
     }
 
-    public void handleMessage(String message, ConnectionHandler connectionHandler) {
-        String key = message.split("=")[0];
-        String value = message.split("=")[1];
+    public void handleMessage(String input, ConnectionHandler connectionHandler) {
+        String key = input.split("=")[0];
+        String value = input.split("=")[1];
 
         if (key.equals("name")) {
             connectionHandler.setParticipant(value);
@@ -73,11 +73,14 @@ public class ConnectionListener extends Thread {
                 connection.addTopic(value);
             }
         } else if (key.equals("message")) {
-            String theMessage = value.split(";")[0];
-            String topic = message.split("=")[2];
+            String message = value.split(";")[0];
+            String topic = input.split("=")[2];
+            connectionHandler.addMessage(message, topic);
             for (ConnectionHandler connection : connections) {
-                connection.sendMessage(theMessage, topic);
+                connection.sendMessage(message, topic);
             }
+        } else if (key.equals("get_messages")) {
+            connectionHandler.sendMessages(value);
         } else {
             logger.error("Sorry, but the key (" + key + ") could not be handled.");
         }
